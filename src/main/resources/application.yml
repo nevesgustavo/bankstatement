@@ -1,0 +1,52 @@
+server:
+  port: 8082
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    request:
+      exchange:
+        producer: ex.producer.bankaccount
+      routing-key:
+        producer: rk.producer.bankaccount
+      dead-letter:
+        producer: dl.producer.bankaccount
+      parking-lot:
+        producer: pl.producer.bankaccount
+    listener:
+      time-retry: 00 45 14 * * *
+
+  data:
+    mongodb:
+      auto-index-creation: true
+      authentication-database: admin
+      uri: mongodb://localhost:27017
+      database: account
+
+
+springdoc:
+  packagesToScan: br.com.neves.bankstatement.endpoint
+  api-docs:
+    path: /api-docs
+  server:
+    url: http://localhost:8082/
+  version: v1
+  swagger-ui:
+    operationsSorter: method
+    tags-sorter: alpha
+    default-model-expand-depth: -1
+    doc-expansion: none
+    disable-swagger-default-url: true
+    use-root-path: true
+
+info:
+  app:
+    title: Neves bank account statement
+
+
+logging:
+  config: classpath:log4j2.yml
+  level:
+    ROOT: INFO

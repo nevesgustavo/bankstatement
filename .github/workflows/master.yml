@@ -1,0 +1,40 @@
+#Workflow name
+name: CI/CD Pipeline
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mongodb-version: ['4.2', '4.4', '5.0.2']
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: maven
+      - name: Start MongoDB
+          uses: supercharge/mongodb-github-action@1.7.0
+          with:
+            mongodb-version: ${{ matrix.mongodb-version }}
+            mongodb-db: account
+      - name: Build with Maven
+        run: mvn clean install
+      - name: Run Tests
+        run: mvn -B test
+      - name: Build & push Docker image
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: gustavon/bankaccount
+          tags: latest
+          registry: docker.io
+          dockerfile: Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_SECRET }}

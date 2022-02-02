@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  db:
+    image: mongo:5.0.2
+    container_name: mongodb_account
+    restart: always
+    volumes:
+      - mongo_data_container:/data/db
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_DATABASE: account
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data_container:
