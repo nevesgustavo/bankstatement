@@ -1,5 +1,5 @@
 #Workflow name
-name: CI/CD Pipeline
+name: maven
 on:
   workflow_dispatch:
   push:
