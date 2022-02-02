@@ -21,10 +21,10 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Start MongoDB
-          uses: supercharge/mongodb-github-action@1.7.0
-          with:
-            mongodb-version: ${{ matrix.mongodb-version }}
-            mongodb-db: account
+        uses: supercharge/mongodb-github-action@1.7.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+          mongodb-db: account
       - name: Build with Maven
         run: mvn clean install
       - name: Run Tests
