@@ -2,6 +2,7 @@ package br.com.neves.bankstatement.integration.controller;
 
 import br.com.neves.bankstatement.BaseContextAwareTest;
 import br.com.neves.bankstatement.dto.TransactionMessageQueue;
+import br.com.neves.bankstatement.jpa.model.Account;
 import br.com.neves.bankstatement.jpa.model.AccountStatement;
 import br.com.neves.bankstatement.service.AccountService;
 import br.com.neves.bankstatement.service.TransactionService;
@@ -38,6 +39,14 @@ public class BankAccountStatementIntegrationControllerTest extends BaseContextAw
     @Test
     @DisplayName("[Integration] getBalance")
     void getBalance() throws Exception {
+        Account account = accountService.findByAgencyAndNumber(ConstantUtils.AG, ConstantUtils.NUMBER);
+        if (account == null) {
+            Account createdAccount = ObjectCreatorUtil.createAccount();
+            createdAccount.setAgency(ConstantUtils.AG);
+            createdAccount.setNumber(ConstantUtils.NUMBER);
+            accountService.save(createdAccount);
+        }
+
         mockMvc.perform(get("/api/v1/account/" + ConstantUtils.AG + "/" + ConstantUtils.NUMBER + "/balance"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
