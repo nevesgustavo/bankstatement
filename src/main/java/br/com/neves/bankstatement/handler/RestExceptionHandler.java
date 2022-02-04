@@ -2,6 +2,7 @@ package br.com.neves.bankstatement.handler;
 
 import br.com.neves.bankstatement.exception.AccountNotFoundException;
 import br.com.neves.bankstatement.model.ExceptionDetails;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
+@Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -19,6 +21,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<Object> handleAnyException(Exception ex, HttpServletRequest request) {
+        log.error("Runtime Exception: {}", ex.getMessage());
         return new ResponseEntity<>(prepareDetails(ex, "Runtime Exception", HttpStatus.INTERNAL_SERVER_ERROR.value(), request),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -29,6 +32,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(value = {AccountNotFoundException.class})
     public ResponseEntity<Object> handleClientNotFoundException(Exception ex, HttpServletRequest request) {
+        log.error("Not found exception: {}", ex.getMessage());
         return new ResponseEntity<>(prepareDetails(ex, "Not found exception", HttpStatus.BAD_REQUEST.value(), request), HttpStatus.BAD_REQUEST);
     }
 
